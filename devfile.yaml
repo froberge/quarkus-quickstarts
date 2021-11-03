@@ -2,7 +2,7 @@ apiVersion: 1.0.0
 metadata:
   generateName: quarkus-
 projects:
-  - name: quarkus-quickstart
+  - name: quarkus-quickstart-
     source:
       type: github
       location: 'https://github.com/froberge/quarkus-quickstart.git'
