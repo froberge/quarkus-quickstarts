@@ -53,7 +53,6 @@ components:
           path: /hello/greeting/che-user
     command: ['tail']
     args: ['-f', '/dev/null']
-
 commands:
   -
     name: Package
@@ -79,7 +78,6 @@ commands:
         component: centos-quarkus-maven
         command: "./mvnw package -Dnative -Dmaven.test.skip -Dquarkus.native.native-image-xmx=2G"
         workdir: ${CHE_PROJECTS_ROOT}/quarkus-quickstarts/getting-started
-
   -
     name: Start Native
     actions:
