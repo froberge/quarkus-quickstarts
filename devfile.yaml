@@ -2,10 +2,10 @@ apiVersion: 1.0.0
 metadata:
   name: quarkus-quickstart
 projects:
-  - name: quarkus-quickstarts
-    source:
-      location: 'https://github.com/froberge/quarkus-quickstarts.git'
-      type: git
+#   - name: quarkus-quickstarts
+#     source:
+#       location: 'https://github.com/froberge/quarkus-quickstarts.git'
+#       type: git
 components:
   - id: redhat/quarkus-java11/latest
     type: chePlugin
