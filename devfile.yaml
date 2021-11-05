@@ -9,11 +9,15 @@ projects:
       location: "https://github.com/froberge/quarkus-quickstarts"
       branch: main
 components:
-  -
+  - id: redhat/vscode-yaml/latest
     type: chePlugin
-    id: redhat/quarkus-java11/latest
-  -
-    type: dockerimage
+  - id: redhat/vscode-xml/latest
+    type: chePlugin
+  - id: redhat/java11/latest
+    type: chePlugin
+  - id: redhat/dependency-analytics/latest
+    type: chePlugin
+  - type: dockerimage
     alias: centos-quarkus-maven
     image: quay.io/eclipse/che-quarkus:ce0526f
     env:
@@ -40,8 +44,7 @@ components:
         port: 5005
         attributes:
           public: 'false'
-  -
-    type: dockerimage
+  - type: dockerimage
     alias: ubi-minimal
     image: 'registry.access.redhat.com/ubi8/ubi-minimal'
     memoryLimit: 32M
@@ -53,10 +56,9 @@ components:
           path: /hello/greeting/che-user
     command: ['tail']
     args: ['-f', '/dev/null']
-  -
-    type: dockerimage
+  - type: dockerimage
     alias: mysql
-    image: quay.io/eclipse/che--centos--mysql-57-centos7:latest-e08ee4d43b7356607685b69bde6335e27cf20c020f345b6c6c59400183882764
+    image: 'registry.redhat.io/rhel8/mysql-80:latest'
     env:
       - name: MYSQL_USER
         value: shop
@@ -66,72 +68,57 @@ components:
         value: shop
       - name: PS1
         value: $(echo ${0})\\$
-    memoryLimit: 300Mi
+    memoryLimit: 512Mi
     endpoints:
-      - name: 'db'
+      - name: mysql
         port: 3306
-        attributes:
-          discoverable: "true"
-          public: "false"
-    mountSources: true
 commands:
-  -
-    name: Package
+  - name: Package
     actions:
-      -
-        type: exec
+      - type: exec
         component: centos-quarkus-maven
         command: "./mvnw package"
         workdir: ${CHE_PROJECTS_ROOT}/quarkus-quickstarts/getting-started
-  -
-    name: Start Development mode (Hot reload + debug)
+  - name: Start Development mode (Hot reload + debug)
     actions:
-      -
-        type: exec
+      - type: exec
         component: centos-quarkus-maven
         command: "./mvnw compile quarkus:dev"
         workdir: ${CHE_PROJECTS_ROOT}/quarkus-quickstarts/getting-started
-  -
-    name: Package Native
+  - name: Package Native
     actions:
-      -
-        type: exec
+      - type: exec
         component: centos-quarkus-maven
         command: "./mvnw package -Dnative -Dmaven.test.skip -Dquarkus.native.native-image-xmx=2G"
         workdir: ${CHE_PROJECTS_ROOT}/quarkus-quickstarts/getting-started
-  -
-    name: Start Native
+  - name: Start Native
     actions:
-      -
-        type: exec
+      - type: exec
         component: ubi-minimal
         command: ./getting-started-1.0.0-SNAPSHOT-runner
         workdir: ${CHE_PROJECTS_ROOT}/quarkus-quickstarts/getting-started/target
-  -
-    name: 1. Prepare database
+  - name: 1. Prepare database
     actions:
-    -
-      type: exec
-      component: mysql
-      command: |
-        /opt/rh/rh-mysql57/root/usr/bin/mysql -u root < ${CHE_PROJECTS_ROOT}/quarkus-quickstarts/src/main/resources/db/user.sql && \
-        /opt/rh/rh-mysql57/root/usr/bin/mysql -u root petclinic < ${CHE_PROJECTS_ROOT}/quarkus-quickstarts/src/main/resources/db/schema.sql && \
-        /opt/rh/rh-mysql57/root/usr/bin/mysql -u root petclinic < ${CHE_PROJECTS_ROOT}/quarkus-quickstarts/src/main/resources/db/mysql/data.sql && \
-        echo -e "\e[32mDone.\e[0m Database shop was configured!"
-  -
-    name: Attach remote debugger
+      - type: exec
+        component: mysql
+        command: |
+          /opt/rh/rh-mysql57/root/usr/bin/mysql -u root < ${CHE_PROJECTS_ROOT}/quarkus-quickstarts/src/main/resources/db/user.sql && \
+          /opt/rh/rh-mysql57/root/usr/bin/mysql -u root petclinic < ${CHE_PROJECTS_ROOT}/quarkus-quickstarts/src/main/resources/db/schema.sql && \
+          /opt/rh/rh-mysql57/root/usr/bin/mysql -u root petclinic < ${CHE_PROJECTS_ROOT}/quarkus-quickstarts/src/main/resources/db/mysql/data.sql && \
+          echo -e "\e[32mDone.\e[0m Database shop was configured!"
+  - name: Attach remote debugger
     actions:
-    - type: vscode-launch
-      referenceContent: |
-        {
-          "version": "0.2.0",
-          "configurations": [
-            {
-              "type": "java",
-              "request": "attach",
-              "name": "Attach to Remote Quarkus App",
-              "hostName": "localhost",
-              "port": 5005
-            }
-          ]
-        }
+      - type: vscode-launch
+        referenceContent: |
+          {
+            "version": "0.2.0",
+            "configurations": [
+              {
+                "type": "java",
+                "request": "attach",
+                "name": "Attach to Remote Quarkus App",
+                "hostName": "localhost",
+                "port": 5005
+              }
+            ]
+          }
