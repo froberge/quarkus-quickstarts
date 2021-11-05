@@ -1,10 +1,12 @@
-package org.acme.getting.started;
+package com.thecat.getting.started.endpoints;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
+import com.thecat.getting.started.services.GreetingService;
 
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
@@ -24,6 +26,6 @@ public class GreetingResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String hello() {
-        return "Bonjour";
+        return "Hello";
     }
 }

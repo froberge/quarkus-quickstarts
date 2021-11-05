@@ -1,4 +1,4 @@
-package org.acme.getting.started;
+package com.thecat.getting.started.endpoints;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
@@ -18,7 +18,7 @@ public class GreetingResourceTest {
                 .when().get("/hello")
                 .then()
                 .statusCode(200)
-                .body(is("Bonjour"));
+                .body(is("Hello"));
     }
 
     @Test
@@ -29,7 +29,7 @@ public class GreetingResourceTest {
                 .when().get("/hello/greeting/{name}")
                 .then()
                 .statusCode(200)
-                .body(is("Bonjour " + uuid));
+                .body(is("Hello " + uuid));
     }
 
 }

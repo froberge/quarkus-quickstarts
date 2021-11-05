@@ -1,4 +1,4 @@
-package org.acme.getting.started;
+package com.thecat.getting.started.services;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -6,7 +6,7 @@ import javax.enterprise.context.ApplicationScoped;
 public class GreetingService {
 
     public String greeting(String name) {
-        return "Bonjour " + name;
+        return "Hello " + name;
     }
 
 }

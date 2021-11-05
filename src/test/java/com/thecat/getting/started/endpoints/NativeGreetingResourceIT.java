@@ -1,4 +1,4 @@
-package org.acme.getting.started;
+package com.thecat.getting.started.endpoints;
 
 import io.quarkus.test.junit.NativeImageTest;
 
