@@ -48,11 +48,11 @@ components:
     env:
       - value: /tmp/pgdata
         name: PGDATA
-      - value: quarkus_test
+      - value: shop
         name: POSTGRES_USER
-      - value: quarkus_test
+      - value: shop
         name: POSTGRES_PASSWORD
-      - value: quarkus_test
+      - value: shop
         name: POSTGRES_DB
 commands:
   - name: Package
@@ -98,5 +98,5 @@ commands:
   - name: psql
     actions:
       - type: exec
-        command: 'psql -d quarkus_test -U quarkus_test -f ''${CHE_PROJECTS_ROOT}/quarkus-quickstarts/src/main/resources/db/product.sql'
+        command: 'psql -d shop -U shop -f ${CHE_PROJECTS_ROOT}/quarkus-quickstarts/src/main/resources/db/product.sql
         component: postgres
