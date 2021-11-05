@@ -120,4 +120,7 @@ commands:
     actions:
       - type: exec
         command: psql -d shop -U shop
-        component: postgres
+        component: postgres  
+
+
+        
