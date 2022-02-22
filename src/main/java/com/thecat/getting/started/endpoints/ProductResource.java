@@ -4,10 +4,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.thecat.getting.started.services.ProductService;
 import com.thecat.getting.started.model.Product;
@@ -50,5 +53,25 @@ public class ProductResource {
     @Produces(MediaType.TEXT_PLAIN)
     public String health() {
         return "SUCCESS";
+    }
+
+    @POST
+    @Path( "/addproduct" )
+    public Response addProduct( Product product ) {
+        //user.persist();
+        return Response.ok().build();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public Response delete(@PathParam("id") String id) {
+        // User user = User.findById(new ObjectId(id));
+        // if(user == null) {
+        //     throw new NotFoundException();
+        // }
+        // user.delete();
+
+        return Response.ok().build()
+        ;
     }
 }
