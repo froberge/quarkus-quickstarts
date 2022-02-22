@@ -32,7 +32,6 @@ public class ProductService {
         Product.persist(product);
     }
 
-
     @Transactional
     public void deleteById(Integer id) {
             Product product = Product.findById(id);
@@ -42,4 +41,16 @@ public class ProductService {
             product.delete();
     }
 
+    // @Transactional
+    // public void modifyProduct(Product product) {
+    //     Product entity = findProductById( product.id );
+    //     if(entity == null) {
+    //         throw new NotFoundException();
+    //     }
+
+    //     entity.name = product.name;
+    //     entity.description = product.description;
+    //     entity.size = product.size;
+    //     entity.price = product.price;
+    // }
 }

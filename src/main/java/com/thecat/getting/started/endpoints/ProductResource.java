@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -54,4 +55,12 @@ public class ProductResource {
         productService.deleteById(id);
         return Response.ok().build();
     }
+
+    // @PUT
+    // @Path("/edit")
+    // public Response editProduct( Product product ) {
+    //     productService.modifyProduct(product);
+    //     return Response.ok().build();
+    // }
+
 }

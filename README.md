@@ -93,3 +93,7 @@ curl  --location --request POST 'http://localhost:8080/products/add' \
 --data-raw \
 '{"name": "Capuccino", "description": "DESC_CAPPUCCINO_01", "size": "SMALL" , "price": "4.25"}'
 ```
+
+curl  --location --request PUT 'http://localhost:8080/products/edit' \
+--header 'Content-Type: application/json' \
+--data-raw '{ "id": 1, "name": "Cortado", "description": "DESC_CORTADO_O1", "size": "SMALL" , "price": "7.25"}'
