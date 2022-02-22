@@ -29,8 +29,6 @@ public class ProductService {
 
     @Transactional
     public void addProduct(Product product) {
-
-        System.out.println( "PRODUCT " +  product.toString() );
         Product.persist(product);
     }
 
