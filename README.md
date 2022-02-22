@@ -79,3 +79,17 @@ After getting a cup of coffee, you'll be able to run this executable directly:
 > ./target/getting-started-1.0.0-SNAPSHOT-runner
 
 
+## Curl Example:
+
+To delete a product
+```
+curl -X DELETE http://localhost:8080/products/{id}
+```
+
+To Add a Product
+```
+curl  --location --request POST 'http://localhost:8080/products/add' \
+--header 'Content-Type: application/json' \
+--data-raw \
+'{"name": "Capuccino", "description": "DESC_CAPPUCCINO_01", "size": "SMALL" , "price": "4.25"}'
+```

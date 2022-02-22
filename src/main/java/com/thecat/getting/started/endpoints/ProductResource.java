@@ -35,43 +35,23 @@ public class ProductResource {
     }
 
     @GET
-    @Path("size/{size}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Product> getAProduct(@PathParam( "size" ) String size) {
-        return productService.findProductBySize(size);
-    }
-
-    @GET
     @Path("count")
     @Produces(MediaType.APPLICATION_JSON)
     public long getCount() {
         return productService.getProductCount();
     }
 
-    @GET
-    @Path( "health")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String health() {
-        return "SUCCESS";
-    }
-
     @POST
-    @Path( "/addproduct" )
+    @Path( "/add" )
     public Response addProduct( Product product ) {
-        //user.persist();
+        productService.addProduct(product);
         return Response.ok().build();
     }
 
     @DELETE
-    @Path("/{id}")
-    public Response delete(@PathParam("id") String id) {
-        // User user = User.findById(new ObjectId(id));
-        // if(user == null) {
-        //     throw new NotFoundException();
-        // }
-        // user.delete();
-
-        return Response.ok().build()
-        ;
+    @Path("{id}")
+    public Response delete(@PathParam( "id" ) Integer id) {
+        productService.deleteById(id);
+        return Response.ok().build();
     }
 }
