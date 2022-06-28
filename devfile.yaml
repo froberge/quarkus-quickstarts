@@ -37,23 +37,23 @@ components:
         name: JAVA_OPTS
       - value: $(JAVA_OPTS)
         name: MAVEN_OPTS
-    - mountSources: true
-      memoryLimit: 512Mi
-      type: dockerimage
-      volumes:
-        - name: postgresql-data
-          containerPath: /var/lib/postgresql/data
-      alias: postgres
-      image: postgres
-      env:
-        - value: /tmp/pgdata
-          name: PGDATA
-        - value: shop
-          name: POSTGRES_USER
-        - value: shop
-          name: POSTGRES_PASSWORD
-        - value: shop
-          name: POSTGRES_DB
+  - mountSources: true
+    memoryLimit: 512Mi
+    type: dockerimage
+    volumes:
+      - name: postgresql-data
+        containerPath: /var/lib/postgresql/data
+    alias: postgres
+    image: postgres
+    env:
+      - value: /tmp/pgdata
+        name: PGDATA
+      - value: shop
+        name: POSTGRES_USER
+      - value: shop
+        name: POSTGRES_PASSWORD
+      - value: shop
+        name: POSTGRES_DB
   - id: redhat/java/latest
     type: chePlugin
   - id: redhat/vscode-yaml/latest
