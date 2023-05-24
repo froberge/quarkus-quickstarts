@@ -95,3 +95,8 @@ commands:
         type: exec
         command: psql -d shop -U shop -f product.sql
         component: postgres
+  - name: psql-connect
+    actions:
+      - type: exec
+        command: psql -d shop -U shop -P shop
+        component: postgres
