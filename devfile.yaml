@@ -54,7 +54,7 @@ components:
         - attributes:
             path: /hello/greeting/che-user
           exposure: public
-          name: hello-greeting-endpoint
+          name: greet-endpoint
           protocol: http
           targetPort: 8080
         - attributes:
