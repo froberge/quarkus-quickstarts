@@ -45,44 +45,33 @@ projects:
         origin: 'https://github.com/froberge/simple-quarkus-crud.git'
     name: simple-quarkus-crud
 components:
-  - container:
-      endpoints:
-        - exposure: public
-          name: shop-web-java
-          protocol: http
-          targetPort: 8080
-        - attributes:
-            path: /hello/greeting/che-user
-          exposure: public
-          name: greet-endpoint
-          protocol: http
-          targetPort: 8080
-        - attributes:
-            public: 'false'
-          exposure: internal
-          name: debug
-          protocol: http
-          targetPort: 5005
-        - attributes:
-            public: 'false'
-          exposure: internal
-          name: tests
-          protocol: http
-          targetPort: 8081
+  - name: tools
+    container:
+      image: 'registry.redhat.io/codeready-workspaces/plugin-java11-rhel8@sha256:5409c04e09f78b0d52fea653ee95f7e9556a23ba63889bdeab2c7c7458c06105'
       env:
         - name: JAVA_OPTS
           value: '-XX:MaxRAMPercentage=50.0 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xms20m -Djava.security.egd=file:/dev/./urandom -Duser.home=/home/jboss'
         - name: MAVEN_OPTS
           value: $(JAVA_OPTS)
-      image: 'registry.redhat.io/codeready-workspaces/plugin-java11-rhel8@sha256:5409c04e09f78b0d52fea653ee95f7e9556a23ba63889bdeab2c7c7458c06105'
-      memoryLimit: 512Mi
+      endpoints:
+        - exposure: public
+          name: shop-web-java
+          protocol: http
+          targetPort: 8080
+          path: /hello/greeting/che-user
+        - exposure: none
+          name: debug
+          protocol: http
+          targetPort: 5005
+      memoryLimit: 1G
       mountSources: true
       sourceMapping: /projects
       volumeMounts:
         - name: m2
           path: /home/jboss/.m2
-    name: maven
-  - container:
+  - name: postgres
+    container:
+      image: postgres
       env:
         - name: PGDATA
           value: /tmp/pgdata
@@ -92,39 +81,49 @@ components:
           value: shop
         - name: POSTGRES_DB
           value: shop
-      image: postgres
       memoryLimit: 512Mi
       mountSources: true
       sourceMapping: /projects
       volumeMounts:
         - name: postgresql-data
           path: /var/lib/postgresql/data
-    name: postgres
   - name: m2
     volume: {}
   - name: postgresql-data
     volume: {}
 commands:
-  - exec:
-      commandLine: mvn package
-      component: maven
+  - id: package-the-application
+    exec:
       label: 1. Package the application
-      workingDir: '${PROJECTS_ROOT}/quarkus-quickstarts/getting-started'
-    id: package-the-application
-  - exec:
-      commandLine: 'mvn compile quarkus:dev -Dquarkus.http.host=0.0.0.0 -Dquarkus.live-reload.instrumentation=false'
-      component: maven
-      label: 2. Start Quarkus in devmode (hot deploy + debug)
-      workingDir: '${PROJECTS_ROOT}/quarkus-quickstarts/getting-started'
-    id: start-quarkus-in-devmode-hot-deploy--debug
-  - exec:
+      component: tools
+      workingDir: '${PROJECTS_ROOT}/simple-quarkus-crud'
+      commandLine: mvn package
+      group:
+        kind: build
+        isDefault: true
+  - id: 2-start-dev
+    exec:
+      label: 2. Start Quarkus in dev mode (hot deploy + debug)
+      component: tools
+      commandLine: 'mvn compile quarkus:dev'
+      workingDir: '${PROJECTS_ROOT}/simple-quarkus-crud'
+      group:
+        kind: run
+        isDefault: true
+  - id: psql-init  
+    exec:
+      label: psql-init
       commandLine: psql -d shop -U shop -f product.sql
       component: postgres
-      label: psql-init
       workingDir: '${PROJECTS_ROOT}/simple-quarkus-crud/src/main/resources/db'
-    id: psql-init
-  - exec:
+      group:
+        kind: run
+        isDefault: true
+  - id: psql-connect
+    exec:
+      label: psql-connect
       commandLine: psql -d shop -U shop
       component: postgres
-      label: psql-connect
-    id: psql-connect
+      group:
+        kind: run
+        isDefault: true
