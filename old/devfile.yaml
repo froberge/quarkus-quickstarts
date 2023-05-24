@@ -1,0 +1,97 @@
+apiVersion: 1.0.0
+metadata:
+  name: simple-quarkus-crudlh6b
+projects:
+  - name: simple-quarkus-crud
+    source:
+      location: 'https://github.com/froberge/simple-quarkus-crud.git'
+      type: git
+components:
+  - id: redhat/quarkus-java11/latest
+    type: chePlugin
+  - mountSources: true
+    endpoints:
+      - name: shop-web-java
+        port: 8080
+      - attributes:
+          path: /hello/greeting/che-user
+        name: hello-greeting-endpoint
+        port: 8080
+      - attributes:
+          public: 'false'
+        name: debug
+        port: 5005
+      - attributes:
+          public: 'false'
+        name: tests
+        port: 8081
+    memoryLimit: 512Mi
+    type: dockerimage
+    volumes:
+      - name: m2
+        containerPath: /home/jboss/.m2
+    alias: maven
+    image: 'registry.redhat.io/codeready-workspaces/plugin-java11-rhel8@sha256:5409c04e09f78b0d52fea653ee95f7e9556a23ba63889bdeab2c7c7458c06105'
+    env:
+      - value: '-XX:MaxRAMPercentage=50.0 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xms20m -Djava.security.egd=file:/dev/./urandom -Duser.home=/home/jboss'
+        name: JAVA_OPTS
+      - value: $(JAVA_OPTS)
+        name: MAVEN_OPTS
+  - mountSources: true
+    memoryLimit: 512Mi
+    type: dockerimage
+    volumes:
+      - name: postgresql-data
+        containerPath: /var/lib/postgresql/data
+    alias: postgres
+    image: postgres
+    env:
+      - value: /tmp/pgdata
+        name: PGDATA
+      - value: shop
+        name: POSTGRES_USER
+      - value: shop
+        name: POSTGRES_PASSWORD
+      - value: shop
+        name: POSTGRES_DB
+  - id: redhat/java/latest
+    type: chePlugin
+  - id: redhat/vscode-yaml/latest
+    type: chePlugin
+  - id: redhat/vscode-xml/latest
+    type: chePlugin
+commands:
+  - name: 1. Package the application
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/quarkus-quickstarts/getting-started'
+        type: exec
+        command: mvn package
+        component: maven
+  - name: 2. Start Quarkus in devmode (hot deploy + debug)
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/quarkus-quickstarts/getting-started'
+        type: exec
+        command: 'mvn compile quarkus:dev -Dquarkus.http.host=0.0.0.0 -Dquarkus.live-reload.instrumentation=false'
+        component: maven
+  - name: Attach remote debugger
+    actions:
+      - referenceContent: |
+          {
+            "version": "0.2.0",
+            "configurations": [
+              {
+                "type": "java",
+                "request": "attach",
+                "name": "Attach to Remote Quarkus App",
+                "hostName": "localhost",
+                "port": 5005
+              }
+            ]
+          }
+        type: vscode-launch
+  - name: psql-init
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/simple-quarkus-crud/src/main/resources/db'
+        type: exec
+        command: psql -d shop -U shop -f product.sql
+        component: postgres
