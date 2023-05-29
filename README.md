@@ -21,7 +21,6 @@ been set, and that a JDK 1.11+ `java` command is on the path.
 
 See the [Building a Native Executable guide](https://quarkus.io/guides/building-native-image-guide)
 for help setting up your environment.
----
 
 ## Building the application
 
