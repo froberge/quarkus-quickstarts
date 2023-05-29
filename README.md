@@ -21,6 +21,7 @@ been set, and that a JDK 1.11+ `java` command is on the path.
 
 See the [Building a Native Executable guide](https://quarkus.io/guides/building-native-image-guide)
 for help setting up your environment.
+---
 
 ## Building the application
 
@@ -78,6 +79,7 @@ After getting a cup of coffee, you'll be able to run this executable directly:
 
 > ./target/getting-started-1.0.0-SNAPSHOT-runner
 
+---
 
 ## Curl Example:
 
@@ -97,3 +99,5 @@ curl  --location --request POST 'http://localhost:8080/products/add' \
 curl  --location --request PUT 'http://localhost:8080/products/edit' \
 --header 'Content-Type: application/json' \
 --data-raw '{ "id": 1, "name": "Cortado", "description": "DESC_CORTADO_O1", "size": "SMALL" , "price": "7.25"}'
+
+
